@@ -14,16 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      groups: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["group_kind"]
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["group_kind"]
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["group_kind"]
+          name?: string
+        }
+        Relationships: []
+      }
+      review_likes: {
+        Row: {
+          created_at: string
+          review_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          review_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          review_id?: string
+          visitor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_likes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          anonymous: boolean
+          body: string
+          classroom: string
+          created_at: string
+          id: string
+          likes: number
+          public_classroom: string | null
+          rating: number
+          status: Database["public"]["Enums"]["review_status"]
+          teacher_id: string
+          views: number
+        }
+        Insert: {
+          anonymous?: boolean
+          body: string
+          classroom: string
+          created_at?: string
+          id?: string
+          likes?: number
+          public_classroom?: string | null
+          rating: number
+          status?: Database["public"]["Enums"]["review_status"]
+          teacher_id: string
+          views?: number
+        }
+        Update: {
+          anonymous?: boolean
+          body?: string
+          classroom?: string
+          created_at?: string
+          id?: string
+          likes?: number
+          public_classroom?: string | null
+          rating?: number
+          status?: Database["public"]["Enums"]["review_status"]
+          teacher_id?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_groups: {
+        Row: {
+          group_id: string
+          teacher_id: string
+        }
+        Insert: {
+          group_id: string
+          teacher_id: string
+        }
+        Update: {
+          group_id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_groups_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teacher_groups_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teachers: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          subject: string | null
+          views: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          subject?: string | null
+          views?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          subject?: string | null
+          views?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      like_review: {
+        Args: { p_review_id: string; p_visitor_id: string }
+        Returns: number
+      }
+      record_review_views: {
+        Args: { p_teacher_id: string }
+        Returns: undefined
+      }
+      record_teacher_view: {
+        Args: { p_teacher_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
+      group_kind: "trieda" | "predmet"
+      review_status: "pending" | "approved" | "declined"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +338,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+      group_kind: ["trieda", "predmet"],
+      review_status: ["pending", "approved", "declined"],
+    },
   },
 } as const
