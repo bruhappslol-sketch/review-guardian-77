@@ -16,7 +16,7 @@ export function SiteHeader() {
           </span>
         </Link>
         <Button asChild size="sm" className="shrink-0">
-          <Link to="/recenzia">
+          <Link to="/recenzia" search={{ teacher: "" }}>
             <PenLine aria-hidden="true" />
             <span className="hidden sm:inline">Napíš recenziu</span>
             <span className="sm:hidden">Recenzia</span>

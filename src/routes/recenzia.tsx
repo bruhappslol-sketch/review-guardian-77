@@ -14,7 +14,7 @@ import { getHomeData, submitReview } from "@/lib/teachers.functions";
 const teachersQuery = queryOptions({ queryKey: ["home"], queryFn: () => getHomeData() });
 
 export const Route = createFileRoute("/recenzia")({
-  validateSearch: (search: Record<string, unknown>) => ({ teacher: typeof search.teacher === "string" ? search.teacher : "" }),
+  validateSearch: (search: Record<string, unknown>) => ({ teacher: typeof search["teacher"] === "string" ? search["teacher"] : "" }),
   loader: ({ context }) => context.queryClient.ensureQueryData(teachersQuery),
   head: () => ({ meta: [
     { title: "Napíš recenziu učiteľa | Školská nástenka" },

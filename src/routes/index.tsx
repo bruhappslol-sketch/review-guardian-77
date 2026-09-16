@@ -45,7 +45,7 @@ function HomePage() {
               Prečítaj si skúsenosti spolužiakov alebo pridaj vlastnú. Každú recenziu pred zverejnením skontrolujeme.
             </p>
             <Button asChild size="lg" className="mt-7">
-              <Link to="/recenzia"><PenLine /> Napíš recenziu</Link>
+              <Link to="/recenzia" search={{ teacher: "" }}><PenLine /> Napíš recenziu</Link>
             </Button>
           </div>
         </section>
