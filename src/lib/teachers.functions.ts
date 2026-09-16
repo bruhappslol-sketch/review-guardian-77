@@ -108,11 +108,12 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async (): P
     const maxViews = Math.max(0, ...list.map((r) => r.views));
     let featured = list[0] ?? null;
     if (list.length > 0 && (maxLikes > 0 || maxViews > 0)) {
-      featured = [...list].sort(
+      featured =
+        [...list].sort(
         (a, b) => b.likes - a.likes || b.views - a.views || a.created_at.localeCompare(b.created_at),
-      )[0];
+        )[0] ?? null;
     } else if (list.length > 0) {
-      featured = list[Math.floor(Math.random() * list.length)];
+      featured = list[Math.floor(Math.random() * list.length)] ?? null;
     }
 
     return {
