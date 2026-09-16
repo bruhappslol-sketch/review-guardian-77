@@ -1,0 +1,5 @@
+- [ ] Fix public data type issue
+- [ ] Build homepage, teacher detail, and review form
+- [ ] Build Slovak admin panel and admin setup
+- [ ] Hide #lovable-badge globally
+- [ ] Verify desktop and mobile flows
