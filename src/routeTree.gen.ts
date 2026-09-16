@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecenziaRouteImport } from './routes/recenzia'
+import { Route as UcitelIdRouteImport } from './routes/ucitel.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const RecenziaRoute = RecenziaRouteImport.update({
   path: '/recenzia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UcitelIdRoute = UcitelIdRouteImport.update({
+  id: '/ucitel/$id',
+  path: '/ucitel/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/recenzia': typeof RecenziaRoute
+  '/ucitel/$id': typeof UcitelIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/recenzia': typeof RecenziaRoute
+  '/ucitel/$id': typeof UcitelIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/recenzia': typeof RecenziaRoute
+  '/ucitel/$id': typeof UcitelIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/recenzia'
+  fullPaths: '/' | '/recenzia' | '/ucitel/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/recenzia'
-  id: '__root__' | '/' | '/recenzia'
+  to: '/' | '/recenzia' | '/ucitel/$id'
+  id: '__root__' | '/' | '/recenzia' | '/ucitel/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RecenziaRoute: typeof RecenziaRoute
+  UcitelIdRoute: typeof UcitelIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecenziaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ucitel/$id': {
+      id: '/ucitel/$id'
+      path: '/ucitel/$id'
+      fullPath: '/ucitel/$id'
+      preLoaderRoute: typeof UcitelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RecenziaRoute: RecenziaRoute,
+  UcitelIdRoute: UcitelIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
