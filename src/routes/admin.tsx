@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, FormEvent } from "react";
-import { LockKeyhole, LogOut, Plus, Check, X, Save, Users2, GraduationCap, Trash2 } from "lucide-react";
+import { LockKeyhole, LogOut, Plus, Check, X, Save, Users2, GraduationCap, Trash2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { improveReview } from "@/lib/ai.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -451,6 +452,20 @@ function ReviewRow({
   const [body, setBody] = useState(review.body);
   const [rating, setRating] = useState(review.rating);
   const [busy, setBusy] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  async function improve() {
+    setAiBusy(true);
+    setAiError("");
+    try {
+      const { text } = await improveReview({ data: { body, rating, teacher } });
+      setBody(text);
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : "Úprava sa nepodarila.");
+    }
+    setAiBusy(false);
+  }
 
   async function update(patch: Partial<Review>) {
     setBusy(true);
@@ -481,6 +496,8 @@ function ReviewRow({
         onChange={(e) => setBody(e.target.value)}
         className="min-h-24 bg-card"
       />
+      {aiError && <p role="alert" className="text-sm font-bold text-destructive">{aiError}</p>}
+      <p className="text-xs text-muted-foreground">Upravený text sa uloží až po kliknutí na Uložiť alebo Schváliť.</p>
       <div className="flex flex-wrap items-center gap-4">
         <label className="flex items-center gap-2 text-sm">
           Hodnotenie
@@ -495,6 +512,10 @@ function ReviewRow({
           <span className="text-muted-foreground">/ 10</span>
         </label>
         <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="secondary" disabled={aiBusy || busy} onClick={() => void improve()}>
+            <Sparkles aria-hidden="true" />
+            {aiBusy ? "Upravujem…" : "Upraviť umelou inteligenciou (podrobnejšie)"}
+          </Button>
           <Button
             size="sm"
             variant="outline"
