@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, FormEvent } from "react";
-import { LockKeyhole, LogOut, Plus, Check, X, Save, Users2, GraduationCap } from "lucide-react";
+import { LockKeyhole, LogOut, Plus, Check, X, Save, Users2, GraduationCap, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -217,6 +217,14 @@ function AdminConsole({ onSignOut }: { onSignOut: () => void }) {
           teachers={teachers}
           groups={groups}
           links={links}
+          onDone={async (text) => {
+            setMessage(text);
+            await reload();
+          }}
+        />
+        <DeleteList
+          teachers={teachers}
+          groups={groups}
           onDone={async (text) => {
             setMessage(text);
             await reload();
@@ -516,5 +524,66 @@ function ReviewRow({
         </div>
       </div>
     </article>
+  );
+}
+
+function DeleteList({
+  teachers,
+  groups,
+  onDone,
+}: {
+  teachers: Teacher[];
+  groups: Group[];
+  onDone: (message: string) => void | Promise<void>;
+}) {
+  async function remove(table: "teachers" | "groups", id: string, label: string) {
+    const extra = table === "teachers" ? " Zmažú sa aj všetky jeho recenzie." : "";
+    if (!window.confirm(`Naozaj zmazať „${label}"?${extra}`)) return;
+    const { error } = await supabase.from(table).delete().eq("id", id);
+    void onDone(error ? `Nepodarilo sa zmazať: ${error.message}` : `„${label}" bol zmazaný.`);
+  }
+
+  const sections: { title: string; items: { id: string; label: string; table: "teachers" | "groups" }[] }[] = [
+    { title: "Učitelia", items: teachers.map((t) => ({ id: t.id, label: t.name, table: "teachers" })) },
+    {
+      title: "Triedy",
+      items: groups.filter((g) => g.kind === "trieda").map((g) => ({ id: g.id, label: g.name, table: "groups" })),
+    },
+    {
+      title: "Predmety",
+      items: groups.filter((g) => g.kind === "predmet").map((g) => ({ id: g.id, label: g.name, table: "groups" })),
+    },
+  ];
+
+  return (
+    <section className="cozy-card p-5 sm:p-6">
+      <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
+        <Trash2 className="size-5 text-primary" aria-hidden="true" />
+        Mazanie učiteľov, tried a predmetov
+      </h2>
+      <div className="mt-4 grid gap-5 sm:grid-cols-3">
+        {sections.map((section) => (
+          <div key={section.title}>
+            <h3 className="text-sm font-bold text-muted-foreground">{section.title}</h3>
+            <ul className="mt-2 space-y-2">
+              {section.items.length === 0 && <li className="text-sm text-muted-foreground">Nič tu nie je.</li>}
+              {section.items.map((item) => (
+                <li key={item.id} className="flex items-center justify-between gap-2 rounded-lg bg-muted/50 px-3 py-2">
+                  <span className="truncate text-sm">{item.label}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    aria-label={`Zmazať ${item.label}`}
+                    onClick={() => void remove(item.table, item.id, item.label)}
+                  >
+                    <Trash2 className="text-destructive" aria-hidden="true" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
