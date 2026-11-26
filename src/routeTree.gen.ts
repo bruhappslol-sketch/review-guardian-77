@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as PodmienkyRouteImport } from './routes/podmienky'
 import { Route as RecenziaRouteImport } from './routes/recenzia'
 import { Route as UcitelIdRouteImport } from './routes/ucitel.$id'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PodmienkyRoute = PodmienkyRouteImport.update({
+  id: '/podmienky',
+  path: '/podmienky',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecenziaRoute = RecenziaRouteImport.update({
@@ -38,12 +44,14 @@ const UcitelIdRoute = UcitelIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/podmienky': typeof PodmienkyRoute
   '/recenzia': typeof RecenziaRoute
   '/ucitel/$id': typeof UcitelIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/podmienky': typeof PodmienkyRoute
   '/recenzia': typeof RecenziaRoute
   '/ucitel/$id': typeof UcitelIdRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/podmienky': typeof PodmienkyRoute
   '/recenzia': typeof RecenziaRoute
   '/ucitel/$id': typeof UcitelIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/recenzia' | '/ucitel/$id'
+  fullPaths: '/' | '/admin' | '/podmienky' | '/recenzia' | '/ucitel/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/recenzia' | '/ucitel/$id'
-  id: '__root__' | '/' | '/admin' | '/recenzia' | '/ucitel/$id'
+  to: '/' | '/admin' | '/podmienky' | '/recenzia' | '/ucitel/$id'
+  id: '__root__' | '/' | '/admin' | '/podmienky' | '/recenzia' | '/ucitel/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  PodmienkyRoute: typeof PodmienkyRoute
   RecenziaRoute: typeof RecenziaRoute
   UcitelIdRoute: typeof UcitelIdRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/podmienky': {
+      id: '/podmienky'
+      path: '/podmienky'
+      fullPath: '/podmienky'
+      preLoaderRoute: typeof PodmienkyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recenzia': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  PodmienkyRoute: PodmienkyRoute,
   RecenziaRoute: RecenziaRoute,
   UcitelIdRoute: UcitelIdRoute,
 }

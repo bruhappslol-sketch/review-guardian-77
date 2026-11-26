@@ -183,6 +183,27 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_signatures: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

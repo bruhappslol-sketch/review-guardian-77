@@ -231,6 +231,7 @@ function AdminConsole({ onSignOut }: { onSignOut: () => void }) {
             await reload();
           }}
         />
+        <Signatures />
         <Moderation reviews={reviews} teacherName={teacherName} onDone={reload} />
       </main>
     </div>
@@ -605,6 +606,33 @@ function DeleteList({
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function Signatures() {
+  const [rows, setRows] = useState<{ id: string; full_name: string; created_at: string }[]>([]);
+  async function load() {
+    const { data } = await supabase.from("visitor_signatures").select("id, full_name, created_at").order("created_at", { ascending: false });
+    setRows(data ?? []);
+  }
+  useEffect(() => { void load(); }, []);
+  return (
+    <section className="cozy-card p-5">
+      <h2 className="font-display text-xl font-semibold">Podpisy návštevníkov ({rows.length})</h2>
+      {rows.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">Zatiaľ sa nikto nepodpísal.</p> : (
+        <ul className="mt-3 max-h-80 divide-y divide-border overflow-auto">
+          {rows.map((r) => (
+            <li key={r.id} className="flex items-center justify-between gap-3 py-2 text-sm">
+              <span className="font-bold">{r.full_name}</span>
+              <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                {new Date(r.created_at).toLocaleString("sk-SK")}
+                <Button size="sm" variant="ghost" onClick={async () => { if (confirm("Zmazať podpis?")) { await supabase.from("visitor_signatures").delete().eq("id", r.id); await load(); } }}><Trash2 /></Button>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

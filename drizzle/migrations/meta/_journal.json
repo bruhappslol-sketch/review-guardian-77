@@ -8,6 +8,13 @@
       "when": 1789493156395,
       "tag": "0000_nastenka_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795729012111,
+      "tag": "0001_visitor_signatures",
+      "breakpoints": true
     }
   ]
 }
